@@ -22,7 +22,7 @@
                 <input type="hidden" name="page" value = "1">
                 <div class="input-group-prepend">
                     <select class="custom-select" name="type">
-                        <option th:selected="${pageRequestDTO.type == null}">-------</option>
+                        <option th:if="${pageRequestDTO != null and pageRequestDTO.type == null}">-------</option>
                         <option value="t" th:selected="${pageRequestDTO.type =='t'}" >제목</option>
                         <option value="t" th:selected="${pageRequestDTO.type =='c'}"  >내용</option>
                         <option value="t"  th:selected="${pageRequestDTO.type =='w'}" >작성자</option>
@@ -105,11 +105,10 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Modal body text goes here.</p>
+                        <p th:style="${isError} ? 'color: red;' : 'color: green;'" th:text="${msg}"></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -117,7 +116,7 @@
 
         <script th:inline="javascript">
 
-            var msg = [[${msg}]];
+            var msg = /*[[${msg}]]*/ '[[${msg}]]';
 
             console.log(msg);
 

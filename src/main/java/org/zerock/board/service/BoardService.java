@@ -2,14 +2,17 @@ package org.zerock.board.service;
 
 
 import org.zerock.board.dto.BoardDTO;
+import org.zerock.board.dto.PageRequestDTO;
+import org.zerock.board.dto.PageResultDTO;
 import org.zerock.board.entity.Board;
 import org.zerock.board.entity.Member;
 
 public interface BoardService {
 
     Long register(BoardDTO dto);
-
-    //void modify(BoardDTO boardDTO);
+    BoardDTO read(Long bno);
+    void modify(BoardDTO boardDTO);
+    void remove(Long bno);
 
     default Board dtoToEntity(BoardDTO dto){
 
@@ -30,14 +33,16 @@ public interface BoardService {
                 .bno(board.getBno())
                 .title(board.getTitle())
                 .content(board.getContent())
+                .writerEmail(member != null ? member.getEmail() : "No Email") // Null 체크
+                .writerName(member != null ? member.getName() : "No Name") // Null 체크
+                .replyCount(replyCount != null ? replyCount.intValue() : 0)
                 .regDate(board.getRegDate())
                 .modDate(board.getModDate())
-                .writerEmail(member.getEmail())
-                .writerName(member.getName())
-                .replyCount(replyCount.intValue()) //int로 처리하도록
                 .build();
 
         return boardDTO;
 
     }
+    
+    PageResultDTO<BoardDTO, Board> getList(PageRequestDTO pageRequestDTO);
 }

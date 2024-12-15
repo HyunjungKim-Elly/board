@@ -1,24 +1,23 @@
 package org.zerock.board.repository;
 
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.repository.query.Param;
 import org.zerock.board.entity.Board;
-import org.zerock.board.entity.Member;
 
-import com.querydsl.core.types.Predicate;
+public interface BoardRepository extends JpaRepository<Board, Long> {
 
-import java.util.List;
+    // 페이징 처리와 함께 Board와 Member를 조회
+    @Query(value = "SELECT b FROM Board b LEFT JOIN FETCH b.writer",
+           countQuery = "SELECT COUNT(b) FROM Board b")
+    Page<Board> getBoardWithWriter(Pageable pageable);
 
-public interface BoardRepository extends JpaRepository<Board, Long>{
-
-	 @Query("select b, w from Board b left join b.writer w where b.bno =:bno")
-	 Object getBoardWithWriter(@Param("bno") Long bno);
-
-
+    @Query("SELECT b, w FROM Board b LEFT JOIN b.writer w WHERE b.bno = :bno")
+	Object getBoardWithWriter(@Param("bno") Long bno);
+	
+	@EntityGraph(attributePaths = {"writer"}) // writer 필드를 즉시 로딩
+    Page<Board> findAll(Pageable pageable);
 }
